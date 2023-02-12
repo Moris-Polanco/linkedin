@@ -32,3 +32,4 @@ proposal_name = "Proposal name"
 
 proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
 print(proposal_letter)
+
