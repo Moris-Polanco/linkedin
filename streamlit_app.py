@@ -31,6 +31,8 @@ def generate_email(name, linkedin_url, proposal, interests):
     )
     print("API response:")
     print(response)
+    if len(response.choices) == 0:
+        return "No se pudo generar el correo. Por favor, intenta nuevamente más tarde."
     print("API response text:")
     print(response.choices[0].text)
     return str(response.choices[0].text)
