@@ -27,7 +27,7 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
 
 # Probar la función
 openai_api_key = "your_openai_api_key"
-profile_url = "https://linkedin.com/profile_url"
+profile_url = "https://www.linkedin.com/in/profile_url"
 proposal_name = "Proposal name"
 
 proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
