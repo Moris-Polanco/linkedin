@@ -11,7 +11,7 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
     client_interests = profile_data['interests']
 
     # Generar la carta de propuesta usando GPT-3
-    model_engine = "text-davinci-002"
+    model_engine = "text-davinci-003"
     prompt = (f"Escriba una carta de propuesta para {client_name} sobre la propuesta '{proposal_name}', teniendo en cuenta sus intereses: {client_interests}")
 
     completions = openai.Completion.create(
