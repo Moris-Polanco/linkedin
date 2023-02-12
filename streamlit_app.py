@@ -7,30 +7,34 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # Configuración del modelo GPT-3
 model_engine = "text-davinci-003"
-prompt = (
-    "Hola {nombre}, \n\n"
-    "He estado investigando tu perfil en linkedit.com y me ha impresionado mucho tu experiencia en {area}. "
-    "Me gustaría saber si estarías interesado en hablar sobre una posible colaboración en {proyecto}. "
-    "Quedo a la espera de tu respuesta.\n\n"
-    "Saludos cordiales,\n"
-    "{tu_nombre}"
-)
 
-# Interfaz de usuario de Streamlit
-st.title("Generador de Correos Personalizados")
-nombre = st.text_input("Ingresa el nombre de la persona:")
-area = st.text_input("Ingresa el área de experiencia de la persona:")
-proyecto = st.text_input("Ingresa el proyecto específico que te interesa:")
-
-if st.button("Generar correo"):
-    # Solicitud de generación de texto a OpenAI
+# Función para generar el correo
+def generate_email(name, company, role, linkedin_url):
+    prompt = (f"Hola {name},\n\n" 
+              "He estado investigando tu perfil en LinkedIn y me ha impresionado mucho tu experiencia en {role} en {company}. "
+              "Me gustaría saber si estarías interesado en hablar sobre una posible colaboración en un proyecto relacionado con {role} en nuestra empresa. "
+              "Te he enviado una solicitud de conexión en LinkedIn para que podamos mantenernos en contacto.\n\n"
+              "Saludos cordiales,\n"
+              "Tu nombre")
     response = openai.Completion.create(
         engine=model_engine,
-        prompt=prompt.format(nombre=nombre, area=area, proyecto=proyecto, tu_nombre="Tu Nombre"),
-        max_tokens=150,
+        prompt=prompt,
+        max_tokens=200,
         n=1,
         stop=None,
         temperature=0.5,
+        user=dict(linkedin_url=linkedin_url)
     )
-    # Mostrar el resultado en la interfaz de usuario
-    st.text_area("Correo generado:", value=response.choices[0].text, height=200, max_chars=None)
+    return response.choices[0].text
+
+# Interfaz de usuario de Streamlit
+st.title("Generador de Correos Personalizados")
+name = st.text_input("Ingresa el nombre de la persona:")
+company = st.text_input("Ingresa la empresa en la que trabaja la persona:")
+role = st.text_input("Ingresa el puesto de la persona:")
+linkedin_url = st.text_input("Ingresa la URL del perfil de LinkedIn de la persona:")
+
+if st.button("Generar correo"):
+    # Generar el correo y mostrar el resultado en la interfaz de usuario
+    email = generate_email(name, company, role, linkedin_url)
+    st.text_area("Correo generado:", value=email, height=200, max_chars=None)
