@@ -1,8 +1,9 @@
 import openai
 import streamlit as st
+import os
 
-# Autenticación en OpenAI
-openai.api_key = "YOUR_API_KEY_HERE"
+# Autenticación de OpenAI (oculta la clave en una variable de entorno)
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # Configuración del modelo GPT-3
 model_engine = "text-davinci-003"
