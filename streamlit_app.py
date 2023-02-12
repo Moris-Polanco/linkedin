@@ -29,7 +29,12 @@ def generate_email(name, linkedin_url, proposal, interests):
         temperature=0.5,
         user=json.dumps(user_data)
     )
-    return response.choices[0].text
+    print("API response:")
+    print(response)
+    print("API response text:")
+    print(response.choices[0].text)
+    return str(response.choices[0].text)
+
 
 # Interfaz de usuario de Streamlit
 st.title("Generador de Correos Personalizados")
