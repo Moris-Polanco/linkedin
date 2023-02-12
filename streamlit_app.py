@@ -15,7 +15,7 @@ proposalName = st.text_input("Nombre de tu propuesta:")
  # Generar carta usando GPT-3 y la información proporcionada por el usuario   
 prompt = f"Hola, estoy escribiendo para presentarte mi idea llamada '{proposalName}'. Me enteré que {linkedInURL} es uno de tus intereses principales, y me gustaría compartir contigo cómo puedo ayudarte en este área."    
 
-completion = openai.Completion(engine="davinci", prompt=prompt, max_tokens=150)    
+completion = openai.Completion(engine="davinci", prompt=prompt, max_tokens=350)    
 response = completion.get(prompt)['choices'][0]['text'] 
 
 #Mostrar carta generada en pantalla    
