@@ -52,8 +52,8 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
 if st.button("Generar Carta de Propuesta"):
     proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
 if proposal_letter is None:
-st.write("No se pudo generar la carta de propuesta.")
-else:
-st.success("¡Carta de propuesta generada con éxito!")
-st.write("Aquí está su carta de propuesta:")
-st.write(proposal_letter)
+    st.write("No se pudo generar la carta de propuesta.")
+    else:
+    st.success("¡Carta de propuesta generada con éxito!")
+    st.write("Aquí está su carta de propuesta:")
+    st.write(proposal_letter)
