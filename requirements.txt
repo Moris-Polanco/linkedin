@@ -1,2 +1,3 @@
 openai
 streamlit
+linkedin_api
