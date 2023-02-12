@@ -14,13 +14,18 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
     openai.api_key = api_key
 
     # Obtener información del perfil del cliente potencial a partir de la URL de LinkedIn
-    profile_data = requests.get(profile_url).json()
+    try:
+        profile_data = requests.get(profile_url).json()
+    except requests.exceptions.RequestException as e:
+        st.write("Error al obtener la información del perfil:", e)
+        return None
+
     client_name = profile_data['name']
     client_interests = profile_data['interests']
 
     # Generar la carta de propuesta usando GPT-3
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="text-davinci-003",
         prompt=f"Estimado/a {client_name}, me gustaría proponerle una oportunidad de negocios relacionada con sus intereses en {client_interests}. Nuestra propuesta, llamada '{proposal_name}', implica...",
         max_tokens=1024,
         n=1,
@@ -34,6 +39,9 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
 
 if st.button("Generar Carta de Propuesta"):
     proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
-    st.success("¡Carta de propuesta generada exitosamente!")
-    st.write("\n\n")
-    st.write(proposal_letter)
+    if proposal_letter is None:
+        st.write("No se pudo generar la carta de propuesta.")
+    else:
+        st.success("¡Carta de propuesta generada exitosamente!")
+        st.write("\n\n")
+        st.write(proposal_letter)
