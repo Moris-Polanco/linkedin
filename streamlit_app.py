@@ -12,15 +12,17 @@ st.header("Proporciona la URL del perfil de LinkedIn y el nombre de tu propuesta
 linkedInURL = st.text_input("URL del perfil de LinkedIn:")  
 proposalName = st.text_input("Nombre de tu propuesta:")  
 
- # Generar carta usando GPT-3 y la información proporcionada por el usuario   
-prompt = f"Hola, estoy escribiendo para presentarte mi idea llamada '{proposalName}'. Me enteré que {linkedInURL} es uno de tus intereses principales, y me gustaría compartir contigo cómo puedo ayudarte en este área."    
+if st.button("Generar carta"):
 
-completion = openai.Completion(engine="davinci", prompt=prompt, max_tokens=150)    
-response = completion.get(prompt)
+    # Generar carta usando GPT-3 y la información proporcionada por el usuario   
+    prompt = f"Hola, estoy escribiendo para presentarte mi idea llamada '{proposalName}'. Me enteré que {linkedInURL} es uno de tus intereses principales, y me gustaría compartir contigo cómo puedo ayudarte en este área."    
 
-if response is None:
-    st.write("No se pudo generar la carta de propuesta.")
-else:
-    response = response['choices'][0]['text'] 
-    #Mostrar carta generada en pantalla    
-    st.write(response)
+    completion = openai.Completion(engine="davinci", prompt=prompt, max_tokens=150)    
+    response = completion.get(prompt)
+
+    if response is None:
+        st.write("No se pudo generar la carta de propuesta.")
+    else:
+        response = response['choices'][0]['text'] 
+        #Mostrar carta generada en pantalla    
+        st.write(response)
