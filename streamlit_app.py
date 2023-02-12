@@ -1,28 +1,49 @@
 import streamlit as st
 import openai
+from linkedin_api import Linkedin
 
-# Configurar OpenAI API 
-openai.api_key = "YOUR_API_KEY" 
+# Configuración de API
+openai.api_key = "tu_api_key_de_openai"
 
-# Crear interfaz de usuario con Streamlit 
-st.title("Generador de Cartas de Negocios") 
-st.header("Proporciona la URL del perfil de LinkedIn y el nombre de tu propuesta") 
+# Configuración de LinkedIn
+linkedin_email = "tu_email_de_linkedin"
+linkedin_password = "tu_contraseña_de_linkedin"
+linkedin = Linkedin(linkedin_email, linkedin_password)
 
-# Obtener información del usuario y almacenarla en variables  
-linkedInURL = st.text_input("URL del perfil de LinkedIn:")  
-proposalName = st.text_input("Nombre de tu propuesta:")  
+# Definir función para obtener información del perfil de LinkedIn
+def get_linkedin_profile(url):
+    profile_id = linkedin.find_profile_id(url)
+    profile_data = linkedin.get_profile(profile_id)
+    return profile_data
 
-if st.button("Generar carta"):
+# Definir función para generar la carta de propuesta de negocios
+def generate_business_proposal(profile_data, project_description):
+    # Combinar información del perfil y la descripción del proyecto
+    text = f"Estimado/a {profile_data['firstName']} {profile_data['lastName']},\n\nMe complace presentarle mi propuesta para {project_description}. {profile_data['firstName']}, con su experiencia en {', '.join(profile_data['experience'])}, usted sería el socio perfecto para este proyecto. En particular, sus habilidades en {', '.join(profile_data['skills'])} y su educación en {profile_data['education']} lo hacen ideal para ayudarme a llevar esta idea al siguiente nivel.\n\nSinceramente,\nTu nombre"
 
-    # Generar carta usando GPT-3 y la información proporcionada por el usuario   
-    prompt = f"Hola, estoy escribiendo para presentarte mi idea llamada '{proposalName}'. Me enteré que {linkedInURL} es uno de tus intereses principales, y me gustaría compartir contigo cómo puedo ayudarte en este área."    
+    # Generar la carta de propuesta de negocios con GPT-3
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=text,
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+    business_proposal = response.choices[0].text
+    return business_proposal
 
-    completion = openai.Completion(engine="davinci", prompt=prompt, max_tokens=150)    
-    response = completion.get(prompt)
+# Configuración de la aplicación de Streamlit
+st.title("Generador de cartas de propuestas de negocios con GPT-3")
 
-    if response is None:
-        st.write("No se pudo generar la carta de propuesta.")
-    else:
-        response = response['choices'][0]['text'] 
-        #Mostrar carta generada en pantalla    
-        st.write(response)
+# Obtener URL del perfil de LinkedIn y descripción del proyecto del usuario
+url = st.text_input("Introduce la URL de tu perfil de LinkedIn:")
+project_description = st.text_input("Describe brevemente tu proyecto:")
+
+# Generar la carta de propuesta de negocios y mostrarla al usuario
+if url and project_description:
+    profile_data = get_linkedin_profile(url)
+    business_proposal = generate_business_proposal(profile_data, project_description)
+    st.subheader("Carta de propuesta de negocios generada:")
+    st.write(business_proposal)
+
