@@ -23,7 +23,7 @@ def generate_email(name, linkedin_url, proposal, interests):
     response = openai.Completion.create(
         engine=model_engine,
         prompt=prompt.replace("[intereses]", interests),
-        max_tokens=400,
+        max_tokens=800,
         n=1,
         stop=None,
         temperature=0.5,
