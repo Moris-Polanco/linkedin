@@ -2,9 +2,6 @@ import openai
 import streamlit as st
 import os
 
-# Autenticación de OpenAI (oculta la clave en una variable de entorno)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-
 # Configuración del modelo GPT-3
 model_engine = "text-davinci-003"
 
@@ -16,16 +13,8 @@ def generate_email(name, company, role, linkedin_url):
               "Te he enviado una solicitud de conexión en LinkedIn para que podamos mantenernos en contacto.\n\n"
               "Saludos cordiales,\n"
               "Tu nombre")
-    response = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt,
-        max_tokens=200,
-        n=1,
-        stop=None,
-        temperature=0.5,
-        user=dict(linkedin_url=linkedin_url)
-    )
-    return response.choices[0].text
+    response = openai.api_request("completions", engine=model_engine, prompt=prompt, max_tokens=200, n=1, stop=None, temperature=0.5, user=dict(linkedin_url=linkedin_url))
+    return response["choices"][0]["text"]
 
 # Interfaz de usuario de Streamlit
 st.title("Generador de Correos Personalizados")
