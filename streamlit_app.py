@@ -35,7 +35,6 @@ def generate_email(name, linkedin_url, proposal, interests):
     print(response.choices[0].text)
     return str(response.choices[0].text)
 
-
 # Interfaz de usuario de Streamlit
 st.title("Generador de Correos Personalizados")
 name = st.text_input("Ingresa el nombre de la persona:")
