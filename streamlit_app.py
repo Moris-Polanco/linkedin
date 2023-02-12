@@ -44,4 +44,4 @@ if st.button("Generar Carta de Propuesta"):
     else:
         st.success("¡Carta de propuesta generada exitosamente!")
         st.write("\n\n")
-        st.write(proposal_letter)
+        st.write(proposal_letter) 
