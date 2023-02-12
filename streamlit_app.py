@@ -5,7 +5,7 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
     openai.api_key = api_key
 
     # Obtener la información del perfil del cliente potencial
-    profile_data = requests.get(profile_url).json()
+    profile_data = requests.get(https://www.linkedin.com/in/profile_url).json()
     client_name = profile_data['name']
     client_interests = profile_data['interests']
 
