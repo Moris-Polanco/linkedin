@@ -1,35 +1,21 @@
+import streamlit as st
 import openai
 
-def generate_proposal_letter(api_key, profile_url, proposal_name):
-    # Inicializar la API de OpenAI con la clave de API proporcionada
-    openai.api_key = api_key
+# Configurar OpenAI API 
+openai.api_key = "YOUR_API_KEY" 
 
-    # Obtener la información del perfil del cliente potencial
-    profile_data = requests.get(profile_url).json()
-    client_name = profile_data['name']
-    client_interests = profile_data['interests']
+# Crear interfaz de usuario con Streamlit 
+st.title("Generador de Cartas de Negocios") 
+st.header("Proporciona la URL del perfil de LinkedIn y el nombre de tu propuesta") 
 
-    # Generar la carta de propuesta usando GPT-3
-    model_engine = "text-davinci-003"
-    prompt = (f"Escriba una carta de propuesta para {client_name} sobre la propuesta '{proposal_name}', teniendo en cuenta sus intereses: {client_interests}")
+ # Obtener información del usuario y almacenarla en variables  
+linkedInURL = st.text_input("URL del perfil de LinkedIn:")  
+proposalName = st.text_input("Nombre de tu propuesta:")  
 
-    completions = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt,
-        max_tokens=1024,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
+ # Generar carta usando GPT-3 y la información proporcionada por el usuario   
+prompt = f"Hola, estoy escribiendo para presentarte mi idea llamada '{proposalName}'. Me enteré que {linkedInURL} es uno de tus intereses principales, y me gustaría compartir contigo cómo puedo ayudarte en este área."    
 
-    message = completions.choices[0].text
-    return message
+ completion = openai.Completion(engine="davinci", prompt=prompt, max_tokens=150)    							    response = completion.get()['choices'][0]['text'] 
 
-# Probar la función
-openai_api_key = "your_openai_api_key"
-profile_url = "https://www.linkedin.com/in/profile_url"
-proposal_name = "Proposal name"
-
-proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
-print(proposal_letter)
-
+ #Mostrar carta generada en pantalla    
+st.write(response)
