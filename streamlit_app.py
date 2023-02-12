@@ -36,24 +36,26 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
     client_interests = profile_data['interests']
 
     # Generar la carta de propuesta usando GPT-3
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=f"Estimado/a {client_name}, me gustaría proponerle una oportunidad de negocios relacionada con sus intereses en {client_interests}. Nuestra propuesta, llamada '{proposal_name}', implica...",
+    model_engine = "text-davinci-002"
+    prompt = (f"Escriba una carta de propuesta para {client_name} sobre la propuesta '{proposal_name}', teniendo en cuenta sus intereses: {client_interests}")
+
+    completions = openai.Completion.create(
+        engine=model_engine,
+        prompt=prompt,
         max_tokens=1024,
         n=1,
         stop=None,
         temperature=0.5,
     )
 
-    proposal_letter = response['choices'][0]['text']
-
-    return proposal_letter
+    message = completions.choices[0].text
+    return message
 
 if st.button("Generar Carta de Propuesta"):
     proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
-if proposal_letter is None:
-    st.write("No se pudo generar la carta de propuesta.")
-else:
-    st.success("¡Carta de propuesta generada con éxito!")
-    st.write("Aquí está su carta de propuesta:")
-    st.write(proposal_letter)
+    if proposal_letter is None:
+        st.write("No se pudo generar la carta de propuesta.")
+    else:
+        st.success("¡Carta de propuesta generada con éxito!")
+        st.write("Aquí está su carta de propuesta:")
+        st.write(proposal_letter)
