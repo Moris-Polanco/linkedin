@@ -1,6 +1,7 @@
 import openai
 import json
 import streamlit as st
+import os
 
 # Autenticación en OpenAI
 openai.api_key = os.environ.get("OPENAI_API_KEY")
