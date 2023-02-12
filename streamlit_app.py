@@ -1,4 +1,5 @@
 import openai
+import requests
 
 def generate_proposal_letter(api_key, profile_url, proposal_name):
     # Inicializar la API de OpenAI con la clave de API proporcionada
