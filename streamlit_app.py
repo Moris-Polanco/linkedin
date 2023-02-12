@@ -1,37 +1,11 @@
-import streamlit as st
-import requests
 import openai
-
-# Crear la interfaz de usuario con Streamlit
-st.title("Generador de Cartas de Propuestas de Negocios")
-
-openai_api_key = st.text_input("Ingrese su clave de API de OpenAI:")
-profile_url = st.text_input("Ingrese la URL del perfil de LinkedIn:")
-proposal_name = st.text_input("Ingrese el nombre de su propuesta:")
 
 def generate_proposal_letter(api_key, profile_url, proposal_name):
     # Inicializar la API de OpenAI con la clave de API proporcionada
     openai.api_key = api_key
 
-    # Verificar si la URL proporcionada es válida
-    try:
-        response = requests.get(profile_url)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        st.write("Error al obtener la información del perfil:", e)
-        return None
-
-    # Verificar si la respuesta es una respuesta JSON válida
-    if response.headers['Content-Type'] == 'application/json':
-        try:
-            profile_data = response.json()
-        except json.decoder.JSONDecodeError as e:
-            st.write("Error al decodificar la respuesta JSON:", e)
-            return None
-    else:
-        st.write("La respuesta no es una respuesta JSON válida.")
-        return None
-
+    # Obtener la información del perfil del cliente potencial
+    profile_data = requests.get(profile_url).json()
     client_name = profile_data['name']
     client_interests = profile_data['interests']
 
@@ -51,11 +25,10 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
     message = completions.choices[0].text
     return message
 
-if st.button("Generar Carta de Propuesta"):
-    proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
-    if proposal_letter is None:
-        st.write("No se pudo generar la carta de propuesta.")
-    else:
-        st.success("¡Carta de propuesta generada con éxito!")
-        st.write("Aquí está su carta de propuesta:")
-        st.write(proposal_letter)
+# Probar la función
+openai_api_key = "your_openai_api_key"
+profile_url = "https://linkedin.com/profile_url"
+proposal_name = "Proposal name"
+
+proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
+print(proposal_letter)
