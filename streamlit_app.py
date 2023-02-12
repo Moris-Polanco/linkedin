@@ -1,54 +1,39 @@
-import openai
-import json
 import streamlit as st
-import os
+import requests
+import openai
 
-# Autenticación en OpenAI
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+# Crear la interfaz de usuario con Streamlit
+st.title("Generador de Cartas de Propuestas de Negocios")
 
-# Configuración del modelo GPT-3
-model_engine = "text-davinci-003"
+openai_api_key = st.text_input("Ingrese su clave de API de OpenAI:")
+profile_url = st.text_input("Ingrese la URL del perfil de LinkedIn:")
+proposal_name = st.text_input("Ingrese el nombre de su propuesta:")
 
-# Función para generar el correo
-def generate_email(name, linkedin_url, proposal, interests):
-    prompt = (f"Hola {name},\n\n" 
-              "Me he dado cuenta de que compartimos intereses en común en tu perfil de LinkedIn, como [intereses]. "
-              "Me gustaría saber si estarías interesado en hablar sobre una posible colaboración en un proyecto relacionado con tus áreas de experiencia. "
-              "Permíteme proporcionarte más detalles sobre la propuesta de negocio:\n\n"
-              f"{proposal}\n\n"
-              "Te he enviado una solicitud de conexión en LinkedIn para que podamos mantenernos en contacto.\n\n"
-              "Saludos cordiales,\n"
-              "Tu nombre")
-    user_data = {"linkedin_url": linkedin_url}
-    print("User data:")
-    print(user_data)
-    print("Prompt:")
-    print(prompt.replace("[intereses]", interests))
+def generate_proposal_letter(api_key, profile_url, proposal_name):
+    # Inicializar la API de OpenAI con la clave de API proporcionada
+    openai.api_key = api_key
+
+    # Obtener información del perfil del cliente potencial a partir de la URL de LinkedIn
+    profile_data = requests.get(profile_url).json()
+    client_name = profile_data['name']
+    client_interests = profile_data['interests']
+
+    # Generar la carta de propuesta usando GPT-3
     response = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt.replace("[intereses]", interests),
-        max_tokens=800,
+        engine="text-davinci-002",
+        prompt=f"Estimado/a {client_name}, me gustaría proponerle una oportunidad de negocios relacionada con sus intereses en {client_interests}. Nuestra propuesta, llamada '{proposal_name}', implica...",
+        max_tokens=1024,
         n=1,
         stop=None,
         temperature=0.5,
-        user=json.dumps(user_data)
     )
-    print("API response:")
-    print(response)
-    if len(response.choices) == 0:
-        return "No se pudo generar el correo. Por favor, intenta nuevamente más tarde."
-    print("API response text:")
-    print(response.choices[0].text)
-    return str(response.choices[0].text)
 
-# Interfaz de usuario de Streamlit
-st.title("Generador de Correos Personalizados")
-name = st.text_input("Ingresa el nombre de la persona:")
-linkedin_url = st.text_input("Ingresa la URL del perfil de LinkedIn de la persona:")
-interests = st.text_input("Ingresa los intereses que compartes con la persona:")
-proposal = st.text_area("Ingresa la propuesta de negocio:")
+    proposal_letter = response['choices'][0]['text']
 
-if st.button("Generar correo"):
-    # Generar el correo y mostrar el resultado en la interfaz de usuario
-    email = generate_email(name, linkedin_url, proposal, interests)
-    st.text_area("Correo generado:", value=email, height=200, max_chars=None)
+    return proposal_letter
+
+if st.button("Generar Carta de Propuesta"):
+    proposal_letter = generate_proposal_letter(openai_api_key, profile_url, proposal_name)
+    st.success("¡Carta de propuesta generada exitosamente!")
+    st.write("\n\n")
+    st.write(proposal_letter)
