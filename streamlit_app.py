@@ -20,6 +20,10 @@ def generate_email(name, linkedin_url, proposal, interests):
               "Saludos cordiales,\n"
               "Tu nombre")
     user_data = {"linkedin_url": linkedin_url}
+    print("User data:")
+    print(user_data)
+    print("Prompt:")
+    print(prompt.replace("[intereses]", interests))
     response = openai.Completion.create(
         engine=model_engine,
         prompt=prompt.replace("[intereses]", interests),
