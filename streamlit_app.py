@@ -6,8 +6,8 @@ from linkedin_api import Linkedin
 openai.api_key = "tu_api_key_de_openai"
 
 # Configuración de LinkedIn
-linkedin_email = "tu_email_de_linkedin"
-linkedin_password = "tu_contraseña_de_linkedin"
+linkedin_email = "mpolanco@feylibertad.org"
+linkedin_password = "Mita1962!"
 linkedin = Linkedin(linkedin_email, linkedin_password)
 
 # Definir función para obtener información del perfil de LinkedIn
