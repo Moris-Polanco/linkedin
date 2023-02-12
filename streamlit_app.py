@@ -14,10 +14,17 @@ def generate_proposal_letter(api_key, profile_url, proposal_name):
     openai.api_key = api_key
 
     # Obtener información del perfil del cliente potencial a partir de la URL de LinkedIn
-    try:
-        profile_data = requests.get(profile_url).json()
-    except requests.exceptions.RequestException as e:
-        st.write("Error al obtener la información del perfil:", e)
+    response = requests.get(profile_url)
+
+    # Verificar si la respuesta es una respuesta JSON válida
+    if response.headers['Content-Type'] == 'application/json':
+        try:
+            profile_data = response.json()
+        except json.decoder.JSONDecodeError as e:
+            st.write("Error al decodificar la respuesta JSON:", e)
+            return None
+    else:
+        st.write("La respuesta no es una respuesta JSON válida.")
         return None
 
     client_name = profile_data['name']
